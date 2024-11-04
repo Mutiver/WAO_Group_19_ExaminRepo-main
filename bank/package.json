@@ -1,0 +1,33 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "send.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "nodemon --inspect src/test.ts",
+    "start": "node dist/receive.ts",
+    "start-dev": "nodemon --inspect src/receive.ts",
+    "send": "nodemon --inspect src/send.ts",
+    "callback": "nodemon --inspect src/callbackReceive.ts",
+    "DBtest": "nodemon --inspect src/testscript.ts",
+    "DB": "nodemon --inspect src/db.ts",
+    "codegen": "powershell -ExecutionPolicy Bypass -File codegen.ps1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.5.2",
+    "mongoose": "^8.1.1",
+    "node": "^22.0.0",
+    "typescript": "^5.3.3",
+    "amqplib": "^0.10.4",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.6.0",
+    "typescript": "^5.4.5"
+  }
+}

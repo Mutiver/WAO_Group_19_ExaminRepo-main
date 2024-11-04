@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package accountingPackage;
+
+service AccountingService {
+    rpc GetTransactionsById(UserId) returns (Transactions) {}
+    rpc CreateTransaction(CreateTransactionInfo) returns (TransactionId) {}
+    rpc DeleteTransactionById(TransactionId) returns (TransactionActionResult) {}
+}
+
+message UserId {
+    string userId = 1;
+}
+
+message TransactionId {
+    string id = 1;
+}
+
+message TransactionCreateDto {
+    string from = 1;
+    string to = 2;
+    double amount = 3;
+}
+
+message Transaction {
+    string from = 1;
+    string to = 2;
+    double amount = 3;
+    string id = 4;
+}
+
+message CreateTransactionInfo {
+    string from = 1;
+    string to = 2;
+    double amount = 3;
+}
+
+message Transactions {
+    repeated Transaction Transactions = 1;
+}
+
+message TransactionActionResult {
+    string message = 1;
+}

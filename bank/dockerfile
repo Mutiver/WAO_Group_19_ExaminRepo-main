@@ -1,0 +1,28 @@
+# Use Node.js image as the base image
+FROM node:18
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Install netcat for wait-for.sh
+RUN apt-get update && apt-get install -y netcat-openbsd
+
+# Bundle app source
+COPY . .
+
+# Ensure wait-for.sh script is in the right place and executable
+# COPY wait-for.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/wait-for.sh
+
+# # Verify the existence and permissions of wait-for.sh
+# RUN ls -l /usr/local/bin/wait-for.sh
+
+# Build the app (compile TypeScript to JavaScript)
+RUN npm run build
+
+# Define the command to run your app using wait-for.sh
+CMD ["node", "dist/receive.js"]

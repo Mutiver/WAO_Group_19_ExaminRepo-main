@@ -1,0 +1,23 @@
+syntax = "proto3";
+option csharp_namespace = "Analytics";
+package analytics;
+
+service Analytics {
+  rpc GetAnalytics (AnalyticsRequest) returns (ReplyStat);
+  rpc UpdateAnalytics (Stat) returns (Stat);
+}
+
+message AnalyticsRequest {
+  string userId = 1;
+}
+
+message ReplyStat{
+  double NumberOfTodos = 3;
+  double NumberOfTransactions = 4;
+}
+
+message Stat {
+  string userId = 2;
+  double NumberOfTodos = 3;
+  double NumberOfTransactions = 4;
+}

@@ -1,0 +1,62 @@
+stages:
+  - build
+  - deploy
+
+include:
+  - local: "common.gitlab-ci.yml"
+    inputs:
+      route: "router"
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        changes:
+          - router/version.json
+  - local: "common.gitlab-ci.yml"
+    inputs:
+      route: "todo"
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        changes:
+          - todo/version.json
+  - local: "common.gitlab-ci.yml"
+    inputs:
+      route: "accounting"
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        changes:
+          - accounting/version.json
+  - local: "common.gitlab-ci.yml"
+    inputs:
+      route: "web-app"
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        changes:
+          - web-app/version.json
+    
+  - local: "common.gitlab-ci.yml"
+    inputs:
+      route: "bank"
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        changes:
+          - bank/version.json
+  - local: "common.gitlab-ci.yml"
+    inputs:
+     route: "analytics"
+    rules:
+     - if: $CI_COMMIT_BRANCH == "main"
+       changes:
+         - analytics/version.json
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    # Add your deployment steps here
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+          - analytics/**/*
+          - todo/**/*
+          - bank/**/*
+          - accounting/**/*
+          - web-app/**/*

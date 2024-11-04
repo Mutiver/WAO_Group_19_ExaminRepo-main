@@ -1,0 +1,107 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+  web-app:
+    image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/web-app:latest
+    container_name: web_app
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+
+  todo:
+    image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/todo:latest
+    container_name: todo
+    depends_on:
+      - mongo
+    ports:
+      - "50051:50051"
+    environment:
+      - NODE_ENV=production
+
+  accountig:
+    image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/accounting:latest
+    container_name: accounting
+    depends_on:
+      - mongo
+    ports:
+      - "50053:50053"
+    environment:
+      - NODE_ENV=production
+
+  router:
+    build:
+      context: ./router
+      dockerfile: Dockerfile
+    container_name: router
+    depends_on:
+      - mongo
+      - rabbitmq
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - RABBITMQ_URL=amqp://user:password@rabbitmq/
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  bank:
+    build:
+      context: ./bank
+      dockerfile: Dockerfile
+    container_name: rabbitmq-app
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      - MONGO_USER=root
+      - MONGO_PASSWORD=example
+      - MONGO_service=mongo
+      - RABBITMQ_USER=user
+      - RABBITMQ_PASSWORD=password
+      - RABBITMQ_SERVICE=rabbitmq
+      - MONGO_URL=mongodb://root:example@mongo:27017/TODO-Bank
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672/
+
+  analytics:
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile
+    container_name: analytics
+    depends_on:
+      - mongo
+    ports:
+      - "5081:5081"
